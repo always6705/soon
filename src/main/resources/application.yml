@@ -1,3 +1,4 @@
+###################  服务端口  ###################
 server:
   port: 168
 
@@ -16,9 +17,12 @@ spring:
 #    username: dsp2
 #    password: DS_P_2019
 #    driver-class-name: oracle.jdbc.driver.OracleDriver
+
 ###################  mybatis配置  ###################
 mybatis:
   mapper-locations: classpath*:com/lucky/soon/**/mapping/*.xml
+
+###################  输出sql语句  ###################
 logging:
   level:
     com.lucky.soon.dao: debug

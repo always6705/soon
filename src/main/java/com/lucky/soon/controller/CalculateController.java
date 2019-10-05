@@ -29,4 +29,17 @@ public class CalculateController {
 		logger.info("-----------------------hello-----------------------");
 		return null;
 	}
+
+	/**
+	 * @Description 计算下期结果
+	 * @Param []:
+	 * @Return void:
+	 * @Author sandy
+	 * @Date 2019/10/5
+	 */
+	@GetMapping(value = "calculate")
+	public void calculate(@RequestParam("orderNumber") Integer orderNumber) {
+		calculateService.calculate(orderNumber);
+
+	}
 }

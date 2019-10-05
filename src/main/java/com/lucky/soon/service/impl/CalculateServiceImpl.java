@@ -20,4 +20,9 @@ public class CalculateServiceImpl implements CalculateService {
 //		return null;
         return calculateDao.test();
     }
+
+    @Override
+    public void calculate(Integer orderNumber) {
+
+    }
 }

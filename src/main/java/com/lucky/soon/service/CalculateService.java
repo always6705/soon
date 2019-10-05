@@ -14,4 +14,13 @@ public interface CalculateService {
      *
     */
     List<EachResult> test();
+
+    /**
+     * @Description 计算下期结果
+     * @Param :
+     * @Return :
+     * @Author K1080077
+     * @Date 2019/10/5
+    */
+	void calculate(Integer orderNumber);
 }
