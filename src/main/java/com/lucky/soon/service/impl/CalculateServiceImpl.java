@@ -17,9 +17,7 @@ public class CalculateServiceImpl implements CalculateService {
 
     @Override
     public List<EachResult> test() {
-        NumAnimal numAnimal = new NumAnimal();
-        numAnimal.getId();
-        return calculateDao.test();
 //		return null;
+        return calculateDao.test();
     }
 }
