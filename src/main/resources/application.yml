@@ -1,0 +1,20 @@
+server:
+  port: 168
+
+###################  spring配置  ###################
+spring:
+  application:
+    name: dsp-admin
+  datasource:
+    url: jdbc:mysql://localhost:3306/springboot?characterEncoding=UTF8&serverTimezone=UTC&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#  datasource:
+#    url: jdbc:oracle:thin:@168.61.2.2:1521:servdb
+#    username: dsp2
+#    password: DS_P_2019
+#    driver-class-name: oracle.jdbc.driver.OracleDriver
+###################  mybatis配置  ###################
+mybatis:
+  mapper-locations: classpath*:com/lucky/soon/**/mapping/*.xml
