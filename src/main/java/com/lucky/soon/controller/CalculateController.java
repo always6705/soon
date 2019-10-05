@@ -1,6 +1,6 @@
 package com.lucky.soon.controller;
 
-import com.lucky.soon.model.User;
+import com.lucky.soon.model.EachResult;
 import com.lucky.soon.service.CalculateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +19,14 @@ public class CalculateController {
 	private CalculateService calculateService;
 
 	@PostMapping(value = "/test")
-	public List<User> test() {
+	public List<EachResult> test() {
 		logger.info("------------------CalculateController-test------------------");
 		return calculateService.test();
 	}
 
 	@GetMapping("/hello")
 	public String hello() {
+		logger.info("-----------------------hello-----------------------");
 		return null;
 	}
 }

@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lucky.soon.dao.CalculateDao">
-	<select id="test" resultType="com.lucky.soon.model.User">
-		select
-		*
-		from SYS_USER
-	</select>
+
+
+    <sql id="base">
+        id, rs1, rs2, rs3, rs4, rs5, rs6, rs7, create_date as createDate, order_number as orderNumber
+    </sql>
+
+    <select id="test" resultType="com.lucky.soon.model.EachResult">
+        select
+        <include refid="base"/>
+        from each_result
+    </select>
 
 </mapper>

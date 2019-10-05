@@ -1,7 +1,7 @@
 package com.lucky.soon.service.impl;
 
 import com.lucky.soon.dao.CalculateDao;
-import com.lucky.soon.model.User;
+import com.lucky.soon.model.EachResult;
 import com.lucky.soon.service.CalculateService;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +11,12 @@ import java.util.List;
 @Service
 public class CalculateServiceImpl implements CalculateService {
 
-	@Resource
-	private CalculateDao calculateDao;
+    @Resource
+    private CalculateDao calculateDao;
 
-	@Override
-	public List<User> test() {
-		return calculateDao.test();
+    @Override
+    public List<EachResult> test() {
 //		return null;
-	}
+        return calculateDao.test();
+    }
 }
