@@ -2,6 +2,7 @@ package com.lucky.soon.service.impl;
 
 import com.lucky.soon.dao.CalculateDao;
 import com.lucky.soon.model.EachResult;
+import com.lucky.soon.model.NumAnimal;
 import com.lucky.soon.service.CalculateService;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,9 @@ public class CalculateServiceImpl implements CalculateService {
 
     @Override
     public List<EachResult> test() {
-//		return null;
+        NumAnimal numAnimal = new NumAnimal();
+        numAnimal.getId();
         return calculateDao.test();
+//		return null;
     }
 }
