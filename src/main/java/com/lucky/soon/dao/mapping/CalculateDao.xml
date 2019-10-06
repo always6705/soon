@@ -3,14 +3,30 @@
 <mapper namespace="com.lucky.soon.dao.CalculateDao">
 
 
-    <sql id="base">
+    <sql id="order_number_base">
         id, rs1, rs2, rs3, rs4, rs5, rs6, rs7, create_date as createDate, order_number as orderNumber
     </sql>
 
     <select id="test" resultType="com.lucky.soon.model.EachResult">
         select
-        <include refid="base"/>
+        <include refid="order_number_base"/>
         from each_result
+    </select>
+
+    <!--获取最后三期的数据-->
+    <select id="getThreeResultByDesc">
+        SELECT
+        <include refid="order_number_base"/>
+        FROM
+          each_result
+        ORDER BY
+          order_number DESC
+        LIMIT 3
+    </select>
+
+    <!--根据tm获取num-->
+    <select id="getNumBy7Result">
+
     </select>
 
 </mapper>

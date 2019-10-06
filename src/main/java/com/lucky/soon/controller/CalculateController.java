@@ -37,7 +37,7 @@ public class CalculateController {
 	 * @Author sandy
 	 * @Date 2019/10/5
 	 */
-	@GetMapping(value = "calculate")
+	@GetMapping(value = "/calculate")
 	public void calculate(@RequestParam("orderNumber") Integer orderNumber) {
 		calculateService.calculate(orderNumber);
 
