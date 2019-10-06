@@ -31,15 +31,14 @@ public class CalculateController {
 	}
 
 	/**
-	 * @Description 计算下期结果
+	 * @Description 预测: 计算下期结果
 	 * @Param []:
 	 * @Return void:
 	 * @Author sandy
 	 * @Date 2019/10/5
 	 */
 	@GetMapping(value = "/calculate")
-	public void calculate(@RequestParam("orderNumber") Integer orderNumber) {
-		calculateService.calculate(orderNumber);
-
+	public void calculate(@RequestParam("date") String date, @RequestParam("orderNumber") Integer orderNumber) {
+		calculateService.calculate(date, orderNumber);
 	}
 }

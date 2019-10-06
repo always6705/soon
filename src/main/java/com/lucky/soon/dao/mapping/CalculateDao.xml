@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lucky.soon.dao.CalculateDao">
-
-
     <sql id="order_number_base">
         id, rs1, rs2, rs3, rs4, rs5, rs6, rs7, create_date as createDate, order_number as orderNumber
     </sql>
@@ -10,23 +8,69 @@
     <select id="test" resultType="com.lucky.soon.model.EachResult">
         select
         <include refid="order_number_base"/>
-        from each_result
+        from
+            each_result
     </select>
 
     <!--获取最后三期的数据-->
-    <select id="getThreeResultByDesc">
+    <select id="getThreeResultByDesc" resultType="com.lucky.soon.model.EachResult">
         SELECT
         <include refid="order_number_base"/>
         FROM
-          each_result
+            each_result
         ORDER BY
-          order_number DESC
-        LIMIT 3
+            create_date DESC
+        LIMIT 4
     </select>
 
     <!--根据tm获取num-->
-    <select id="getNumBy7Result">
-
+    <select id="getNumBy7Result" resultType="Integer">
+        SELECT
+            n.num as num
+        FROM
+            num_animal n
+        INNER JOIN
+        (
+            SELECT
+                n_.animal_id  AS animal_id,
+                n_.start_date AS start_date,
+                n_.end_date   AS end_date
+            FROM
+                num_animal n_
+            WHERE
+                n_.start_date &lt; #{date}
+            AND
+                n_.end_date &gt; #{date}
+            AND
+                n_.num IN
+            <foreach collection="_7ResultList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        ) n_o
+        ON
+            n_o.animal_id = n.animal_id
+        AND n_o.start_date = n.start_date
+        AND n_o.end_date = n.end_date
+        ORDER BY
+            num
     </select>
+
+    <!--插入result-->
+    <insert id="insertResult">
+    INSERT
+    INTO
+        result
+        (
+            content_system,
+            create_date,
+            order_number
+        )
+    VALUES
+    (
+        #{content},
+        #{date},
+        #{orderNumber}
+    )
+    </insert>
 
 </mapper>

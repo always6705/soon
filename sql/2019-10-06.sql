@@ -1,0 +1,22 @@
+SELECT
+    N.NUM AS NUM
+FROM
+    NUM_ANIMAL N
+INNER JOIN
+    (
+        SELECT
+            N_.ANIMAL_ID  AS ANIMAL_ID,
+            N_.START_DATE AS START_DATE,
+            N_.END_DATE   AS END_DATE
+        FROM
+            NUM_ANIMAL N_
+        WHERE
+            N_.START_DATE < '2019-10-06'
+        AND N_.END_DATE > '2019-10-06'
+        AND N_.num IN (8,9,10)) N_O
+ON
+    N_O.ANIMAL_ID = N.ANIMAL_ID
+AND N_O.START_DATE = N.START_DATE
+AND N_O.END_DATE = N.END_DATE
+ORDER BY
+    num

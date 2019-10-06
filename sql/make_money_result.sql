@@ -22,15 +22,23 @@
 DROP TABLE IF EXISTS `result`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `result` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `content` varchar(100) DEFAULT NULL COMMENT '下注内容(1.系统产生, 2.自己购买)',
-  `type` char(1) DEFAULT NULL COMMENT '类型: 系统产生-0, 自己购买-1',
-  `price` int(11) DEFAULT NULL,
-  `createDate` date DEFAULT NULL COMMENT '创建日期',
-  `order` int(11) DEFAULT NULL COMMENT '期数',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COMMENT='下注内容-实体类';
+
+CREATE TABLE
+    result
+    (
+        id INT NOT NULL AUTO_INCREMENT,
+        content_system VARCHAR(100) COMMENT '下注内容_系统',
+        content_actual VARCHAR(100) COMMENT '下注内容_实际',
+        unit_price INT COMMENT '单价',
+        total_system INT COMMENT '总价_系统',
+        total_actual INT COMMENT '总价_实际',
+        total_result_system INT COMMENT '结果_系统',
+        total_result_actual INT COMMENT '结果_实际',
+        create_date DATE COMMENT '创建日期',
+        order_number INT COMMENT '期数',
+        PRIMARY KEY (id)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=ucs2 COMMENT='下注内容-实体类';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

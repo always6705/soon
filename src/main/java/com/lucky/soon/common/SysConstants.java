@@ -20,7 +20,7 @@ public class SysConstants {
      */
     private static List<Integer> initInteger() {
         List<Integer> all_num = new ArrayList<>();
-        for (Integer i = 0; i < 49; i++) {
+        for (Integer i = 1; i <= 49; i++) {
             all_num.add(i);
         }
 
