@@ -23,4 +23,22 @@ public interface CalculateService {
      * @Date 2019/10/5
     */
 	void calculate(String date, Integer orderNumber);
+
+	/**
+	 * @Description : buy num
+	 * @Param :
+	 * @Return :
+	 * @Author K1080077
+	 * @Date 2019/10/7
+	*/
+	void buyNum(String date, Integer orderNumber, String content, Integer price);
+
+	/**
+	 * @Description : result
+	 * @Param :
+	 * @Return :
+	 * @Author K1080077
+	 * @Date 2019/10/7
+	*/
+	void result(String date, Integer orderNumber, Integer odds, EachResult eachResult);
 }

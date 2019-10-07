@@ -1,10 +1,8 @@
 package com.lucky.soon.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * -Author: Sandy
@@ -14,11 +12,11 @@ import java.util.Date;
 @Data
 public class BaseModel implements Serializable {
 
-    // 创建日期, 格式化显示日期
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private Date createDate;
+	// 创建日期, 格式化显示日期
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+	private String createDate;
 
-    // 期数
-    private Integer orderNumber;
+	// 期数
+	private Integer orderNumber;
 
 }

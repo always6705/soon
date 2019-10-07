@@ -10,16 +10,37 @@ import lombok.Data;
 @Data
 public class Result extends BaseModel {
 
-    // 主键id
-    private Integer id;
+	// 主键id
+	private Integer id;
 
-    // 下注内容(1.系统产生, 2.自己购买)
-    private String content;
+	// 下注内容_系统
+	private String contentSystem;
 
-    // 类型: 系统产生-0, 自己购买-1
-    private Character type;
+	// 下注内容_实际
+	private String contentActual;
 
-    // 下注金额
-    private Integer price;
+	// 个数_系统
+	private Integer countSystem;
+
+	// 个数_实际
+	private Integer countActual;
+
+	// 单价
+	private Integer unitPrice;
+
+	// 总价_系统
+	private Integer totalSystem;
+
+	// 总价_实际
+	private Integer totalActual;
+
+	// 结果_系统
+	private Integer totalResultSystem;
+
+	// 结果_实际
+	private Integer totalResultActual;
+
+	// 赔率
+	private Integer odds;
 
 }

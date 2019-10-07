@@ -37,8 +37,30 @@ public class CalculateController {
 	 * @Author sandy
 	 * @Date 2019/10/5
 	 */
-	@GetMapping(value = "/calculate")
-	public void calculate(@RequestParam("date") String date, @RequestParam("orderNumber") Integer orderNumber) {
+	@PostMapping(value = "/calculate")
+	public void calculate(@RequestParam("date") String date,
+						  @RequestParam("orderNumber") Integer orderNumber) {
 		calculateService.calculate(date, orderNumber);
 	}
+
+	@PostMapping(value = "/buyNumber")
+	public void buyNum(@RequestParam("date") String date,
+					   @RequestParam("orderNumber") Integer orderNumber,
+					   @RequestParam("content") String content,
+					   @RequestParam("price") Integer price) {
+		calculateService.buyNum(date, orderNumber, content, price);
+	}
+
+	@PostMapping(value = "/result")
+	public void result(@RequestParam("date") String date,
+					   @RequestParam("orderNumber") Integer orderNumber,
+					   @RequestParam("odds") Integer odds,
+					   @RequestBody EachResult eachResult) {
+		calculateService.result(date, orderNumber, odds, eachResult);
+	}
+
+	// 1. 统计一年
+	// 2. 统计每个月
+	// 3. 搜索期数或者日期
+	// 4. 针对每次查询结果, 需要显示对应的生肖
 }
