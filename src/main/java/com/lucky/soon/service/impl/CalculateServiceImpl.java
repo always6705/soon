@@ -74,8 +74,8 @@ public class CalculateServiceImpl implements CalculateService {
 //		logger.info("----------------------------------------");
 
 		// 去除生肖num
-		threeResultList.removeAll(numBy7Result);
-		logger.info("---去除生肖后的num({}个): {}", threeResultList.size(), threeResultList);
+//		threeResultList.removeAll(numBy7Result);
+//		logger.info("---去除生肖后的num({}个): {}", threeResultList.size(), threeResultList);
 
 //		buyPrice = threeResultList.size() * 5;
 //		logger.info("-1--去除生肖后---下注金额: {}", buyPrice);
