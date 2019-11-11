@@ -16,6 +16,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<jedis.version>2.9.0</jedis.version>
 	</properties>
 
 	<dependencies>
@@ -51,6 +52,14 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- Redis Jedis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>${jedis.version}</version>
+		</dependency>
+
+		<!--Test-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

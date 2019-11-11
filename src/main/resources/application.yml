@@ -17,6 +17,15 @@ spring:
 #    username: dsp2
 #    password: DS_P_2019
 #    driver-class-name: oracle.jdbc.driver.OracleDriver
+  jedis:
+    host: localhost
+    port: 6379
+    timeout: 30000
+    pool:
+      max-wait: 1
+      max-active: 200
+      max-idle: 8
+      min-idle: 0
 
 ###################  mybatis配置  ###################
 mybatis:
@@ -26,3 +35,5 @@ mybatis:
 logging:
   level:
     com.lucky.soon.dao: debug
+
+###################  redis 配置  ###################
