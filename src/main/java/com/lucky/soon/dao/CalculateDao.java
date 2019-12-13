@@ -21,7 +21,7 @@ public interface CalculateDao {
 	 * -param:
 	 * -Description: 获取最后三期的num
 	 */
-	List<EachResult> getThreeResultByDesc();
+	List<EachResult> getThreeResultByDesc(@Param("createDate") String createDate);
 
 	/**
 	 * -Author: Sandy
@@ -29,7 +29,7 @@ public interface CalculateDao {
 	 * -param:
 	 * -Description: 根据tm获取num
 	 */
-	List<Integer> getNumBy7Result(@Param("date") String date,
+	List<Integer> getNumBy7Result(@Param("date") String dupdateResultate,
 								  @Param("_7ResultList") ArrayList<Integer> _7ResultList);
 
 	Result getResultByDateAndOrderNumber(@Param("date") String date,

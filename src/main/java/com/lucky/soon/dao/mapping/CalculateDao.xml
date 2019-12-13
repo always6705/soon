@@ -25,6 +25,7 @@
 		<include refid="order_number_base"/>
 		FROM
 		each_result
+		WHERE create_date &lt; #{createDate}
 		ORDER BY
 		create_date DESC
 		LIMIT 4
@@ -136,27 +137,17 @@
 		INTO
 			each_result
 			(
-				rs1,
-				rs2,
-				rs3,
-				rs4,
-				rs5,
-				rs6,
+				rs1, rs2, rs3,
+				rs4, rs5, rs6,
 				rs7,
-				create_date,
-				order_number
+				create_date, order_number
 			)
 			VALUES
 			(
-				#{eachResult.rs1},
-				#{eachResult.rs2},
-				#{eachResult.rs3},
-				#{eachResult.rs4},
-				#{eachResult.rs5},
-				#{eachResult.rs6},
+				#{eachResult.rs1}, #{eachResult.rs2}, #{eachResult.rs3},
+				#{eachResult.rs4}, #{eachResult.rs5}, #{eachResult.rs6},
 				#{eachResult.rs7},
-				#{date},
-				#{orderNumber}
+				#{date}, #{orderNumber}
 			)
 	</insert>
 

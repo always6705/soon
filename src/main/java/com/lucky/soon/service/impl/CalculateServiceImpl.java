@@ -41,29 +41,25 @@ public class CalculateServiceImpl implements CalculateService {
 	 */
 	@Override
 	public void calculate(String date, Integer orderNumber) {
-//		Integer buyPrice, entry, result;
+		logger.info("calculate --> 日期[{}], 期数[{}]", date, orderNumber);
 
-		// date, 期数
-//		LocalDate date = LocalDate.now();
-//		logger.info("-----------------------------------------------------------------------");
-//		logger.info("---当前日期: {}", date);
+		// 获取前4期所有num
+		List<EachResult> threeResultByDescList = calculateDao.getThreeResultByDesc(date);
 
-		List<EachResult> threeResultByDescList = calculateDao.getThreeResultByDesc();
-
-		// 获取去除前三期的num以及tm
-		HashMap<String, Object> hashMap = getThreeResultNum(threeResultByDescList);
+		// 获取去除前4期的num以及tm
+		HashMap<String, Object> hashMap = getFourResultNum(threeResultByDescList);
 
 		// 三期tm
-		ArrayList<Integer> _7ResultList = new ArrayList<Integer>((HashSet<Integer>) hashMap.get("_7ResultSet"));
-		logger.info("---前三期tm({}个): {}", _7ResultList.size(), _7ResultList);
+		ArrayList<Integer> _7ResultList = new ArrayList<>((HashSet<Integer>) hashMap.get("_7ResultSet"));
+		logger.info("---前4期tm({}个): {}", _7ResultList.size(), _7ResultList);
 
 		// 根据tm获取生肖所有num
 		List<Integer> numBy7Result = calculateDao.getNumBy7Result(date, _7ResultList);
-		logger.info("---计算三期生肖num({}个): {}", numBy7Result.size(), numBy7Result);
+		logger.info("---计算4期生肖num({}个): {}", numBy7Result.size(), numBy7Result);
 
 		// 去除生肖tm的num
-		List<Integer> threeResultList = (List<Integer>) hashMap.get("allBuyNum");
-		logger.info("---去除生肖前的num({}个): {}", threeResultList.size(), threeResultList);
+		List<Integer> fourResultList = (List<Integer>) hashMap.get("allBuyNum");
+		logger.info("---去除生肖前的num({}个): {}", fourResultList.size(), fourResultList);
 
 //		buyPrice = threeResultList.size() * 5;
 //		entry = 42 * 5;
@@ -86,15 +82,15 @@ public class CalculateServiceImpl implements CalculateService {
 //		logger.info("-2--去除生肖后---买中: {}", entry * 2.5);
 //		logger.info("-2--去除生肖后---结果: {}", entry * 2.5 - buyPrice * 2.5);
 
-		// 下注内容: system
-		String expectNum = threeResultList.stream().map(String::valueOf).collect(Collectors.joining(","));
+		// 系统buy内容: system
+		String expectNum = fourResultList.stream().map(String::valueOf).collect(Collectors.joining(","));
 
-		// 将计算的结果插入result表: 判断是否有记录, 有则更新, 无则插入
+		// 将计算的结果插入result表: 判断是否有记录, 有则更新, 无则插入 TODO 仅更新 [content_system, count_system]: buy内容与数量
 		Result result = calculateDao.getResultByDateAndOrderNumber(date, orderNumber);
 		if (null != result) {
-			calculateDao.updateResult(date, orderNumber, expectNum, threeResultList.size());
+			calculateDao.updateResult(date, orderNumber, expectNum, fourResultList.size());
 		} else {
-			calculateDao.insertResult(date, orderNumber, expectNum, threeResultList.size());
+			calculateDao.insertResult(date, orderNumber, expectNum, fourResultList.size());
 		}
 
 	}
@@ -105,16 +101,17 @@ public class CalculateServiceImpl implements CalculateService {
 	 * -param:
 	 * -Description: 获取三期全部的num, 以及近三期tm生肖
 	 */
-	private HashMap<String, Object> getThreeResultNum(List<EachResult> threeResultByDescList) {
+	private HashMap<String, Object> getFourResultNum(List<EachResult> threeResultByDescList) {
 		// 常量: 1-49
 		List<Integer> allNum = new ArrayList<>(SysConstants.ALL_NUM);
 
-		// 返回buyNum, 以及tm
+		// 返回4期所有num, 以及tm
 		HashMap<String, Object> hashMap = new HashMap<>();
 
-		// tm
+		// 4期tm
 		HashSet<Integer> _7Result = new HashSet<>();
 
+		// 4期所有num
 		HashSet<Integer> allResult = new HashSet<>();
 
 		for (EachResult eachResult : threeResultByDescList) {
@@ -125,19 +122,18 @@ public class CalculateServiceImpl implements CalculateService {
 			allResult.add(eachResult.getRs5());
 			allResult.add(eachResult.getRs6());
 			allResult.add(eachResult.getRs7());
-			System.out.println(eachResult.getCreateDate());
 
 			// 记录tm, 以便获取生肖, 之后去除该生肖所有num
 			_7Result.add(eachResult.getRs7());
 		}
 
-		logger.info("---前三期已出num({}个): {}", allResult.size(), allResult);
+		logger.info("---前4期已出num({}个): {}", allResult.size(), allResult);
 
-		// 三期num
-		List<Integer> threeResultNumList = new ArrayList<>(allResult);
+		// 4期num
+		List<Integer> fourResultNumList = new ArrayList<>(allResult);
 
-		// 去除前3期已有的num
-		allNum.removeAll(threeResultNumList);
+		// 去除前4期已有的num
+		allNum.removeAll(fourResultNumList);
 
 		hashMap.put("allBuyNum", allNum);
 		hashMap.put("_7ResultSet", _7Result);

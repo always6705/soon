@@ -17,6 +17,8 @@ spring:
 #    username: dsp2
 #    password: DS_P_2019
 #    driver-class-name: oracle.jdbc.driver.OracleDriver
+
+###################  redis 配置  ###################
   jedis:
     host: localhost
     port: 6379
@@ -26,6 +28,17 @@ spring:
       max-active: 200
       max-idle: 8
       min-idle: 0
+  mail:
+    host: 168.61.10.118
+    username: "006048"
+    password: Admin@123
+    default-encoding: UTF-8
+    port: 25
+    properties:
+      mail:
+        smtp:
+          socketFactory.class: javax.net.ssl.SSLSocketFactory
+        debug: true   （测试用）
 
 ###################  mybatis配置  ###################
 mybatis:
@@ -34,6 +47,6 @@ mybatis:
 ###################  输出sql语句  ###################
 logging:
   level:
+    root: INFO
     com.lucky.soon.dao: debug
 
-###################  redis 配置  ###################
