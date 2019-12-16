@@ -41,4 +41,13 @@ public interface CalculateService {
 	 * @Date 2019/10/7
 	*/
 	void result(String date, Integer orderNumber, Integer odds, EachResult eachResult);
+
+	/**
+	 * -Author: Sandy
+	 * -Date: 2019/12/14 23:13
+	 * -param: date, orderNumber, eachResult
+	 * -Description: 插入每期数据
+	 *
+	*/
+	void insertEachResult(EachResult eachResult);
 }

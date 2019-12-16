@@ -41,46 +41,25 @@ public class CalculateServiceImpl implements CalculateService {
 	 */
 	@Override
 	public void calculate(String date, Integer orderNumber) {
-		logger.info("calculate --> 日期[{}], 期数[{}]", date, orderNumber);
+		logger.info("预测 --> 日期[{}], 期数[{}]", date, orderNumber);
 
 		// 获取前4期所有num
 		List<EachResult> threeResultByDescList = calculateDao.getThreeResultByDesc(date);
 
-		// 获取去除前4期的num以及tm
+		// 获取前4期的num以及tm
 		HashMap<String, Object> hashMap = getFourResultNum(threeResultByDescList);
 
-		// 三期tm
-		ArrayList<Integer> _7ResultList = new ArrayList<>((HashSet<Integer>) hashMap.get("_7ResultSet"));
-		logger.info("---前4期tm({}个): {}", _7ResultList.size(), _7ResultList);
+		// 去除前4期num
+		List<Integer> fourResultList = (List<Integer>) hashMap.get("allBuyNum");
+		logger.info("---前4期num({}个): {}", fourResultList.size(), fourResultList);
+
+		// 4期tm
+//		ArrayList<Integer> _7ResultList = new ArrayList<>((HashSet<Integer>) hashMap.get("_7ResultSet"));
+//		logger.info("---前4期tm({}个): {}", _7ResultList.size(), _7ResultList);
 
 		// 根据tm获取生肖所有num
-		List<Integer> numBy7Result = calculateDao.getNumBy7Result(date, _7ResultList);
-		logger.info("---计算4期生肖num({}个): {}", numBy7Result.size(), numBy7Result);
-
-		// 去除生肖tm的num
-		List<Integer> fourResultList = (List<Integer>) hashMap.get("allBuyNum");
-		logger.info("---去除生肖前的num({}个): {}", fourResultList.size(), fourResultList);
-
-//		buyPrice = threeResultList.size() * 5;
-//		entry = 42 * 5;
-//		logger.info("---去除生肖前---下注金额: {}", buyPrice);
-//		logger.info("---去除生肖前---买中: {}", entry);
-//		logger.info("---去除生肖前---结果: {}", entry - buyPrice);
-//
-//		logger.info("----------------------------------------");
-
-		// 去除生肖num
-//		threeResultList.removeAll(numBy7Result);
-//		logger.info("---去除生肖后的num({}个): {}", threeResultList.size(), threeResultList);
-
-//		buyPrice = threeResultList.size() * 5;
-//		logger.info("-1--去除生肖后---下注金额: {}", buyPrice);
-//		logger.info("-1--去除生肖后---买中: {}", entry);
-//		logger.info("-1--去除生肖后---结果: {}", entry - buyPrice);
-//		logger.info("----------------------------------------");
-//		logger.info("-2--去除生肖后---下注金额: {}", buyPrice * 2.5);
-//		logger.info("-2--去除生肖后---买中: {}", entry * 2.5);
-//		logger.info("-2--去除生肖后---结果: {}", entry * 2.5 - buyPrice * 2.5);
+//		List<Integer> numBy7Result = calculateDao.getNumBy7Result(date, _7ResultList);
+//		logger.info("---计算4期生肖num({}个): {}", numBy7Result.size(), numBy7Result);
 
 		// 系统buy内容: system
 		String expectNum = fourResultList.stream().map(String::valueOf).collect(Collectors.joining(","));
@@ -99,7 +78,7 @@ public class CalculateServiceImpl implements CalculateService {
 	 * -Author: Sandy
 	 * -Date: 2019/10/5 23:29
 	 * -param:
-	 * -Description: 获取三期全部的num, 以及近三期tm生肖
+	 * -Description: 获取4期全部的num, 以及近4期tm生肖
 	 */
 	private HashMap<String, Object> getFourResultNum(List<EachResult> threeResultByDescList) {
 		// 常量: 1-49
@@ -142,7 +121,8 @@ public class CalculateServiceImpl implements CalculateService {
 	}
 
 	/**
-	 * @Description : buy num
+	 * @Description : buy num(且自动计算price)：content_actual, count_actual, unit_price,
+	 * total_system = count_system * price, total_actual = count_actual * price
 	 * @Param :
 	 * @Return :
 	 * @Author K1080077
@@ -153,18 +133,29 @@ public class CalculateServiceImpl implements CalculateService {
 		calculateDao.updateResultForBuyNum(date, orderNumber, content, content.split(",").length, price);
 	}
 
+	/**
+	 * -Author: Sandy
+	 * -Date: 2019/12/14 22:33
+	 * -param: date
+	 * -param: orderNumber
+	 * -param: odds : pei lv
+	 * -param: eachResult
+	 * -Description: 该方法同时可处理历史数据和新数据
+	 */
 	@Override
 	public void result(String date, Integer orderNumber, Integer odds, EachResult eachResult) {
-
-		// 先删除每期记录
-		calculateDao.deleteEachResultByDateAndOrderNumber(date, orderNumber);
-
-		// insert result
-		calculateDao.insertEachResult(date, orderNumber, eachResult);
-
-		// 计算结果
-		// 从表中获取内容
+		// 从result表中获取内容: 计算buy结果
 		Result result = calculateDao.getResultByDateAndOrderNumber(date, orderNumber);
+
+		// 如果没数据, 则通过代码自动进行插入数据 TODO 若无数据, 则是计算以往数据; 若有数据, 则是正常流程(预测->buy->计算)
+		if (null == result) {
+			calculate(date, orderNumber);
+			result = calculateDao.getResultByDateAndOrderNumber(date, orderNumber);
+		} else {
+			// 插入每期数据
+			insertEachResult(eachResult);
+		}
+
 		result.setOdds(odds);
 		result.setTotalResultSystem(null);
 		result.setTotalResultActual(null);
@@ -203,5 +194,21 @@ public class CalculateServiceImpl implements CalculateService {
 
 		// update result
 		calculateDao.updateResultForCalculate(result);
+	}
+
+	/**
+	 * -Author: Sandy
+	 * -Date: 2019/12/14 23:13
+	 * -param: date, orderNumber, eachResult
+	 * -Description: 插入每期数据
+	 *
+	 */
+	@Override
+	public void insertEachResult(EachResult eachResult) {
+		// 先删除每期记录
+		calculateDao.deleteEachResultByDateAndOrderNumber(eachResult.getDate(), eachResult.getOrderNumber());
+
+		// insert result
+		calculateDao.insertEachResult(eachResult);
 	}
 }

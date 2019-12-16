@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-@RequestMapping("test")
+@RequestMapping("/soon")
 public class CalculateController {
 
 	private final static Logger logger = LoggerFactory.getLogger(CalculateController.class);
@@ -39,24 +39,55 @@ public class CalculateController {
 	 */
 	@PostMapping(value = "/calculate")
 	public void calculate(@RequestParam("date") String date,
-						  @RequestParam("orderNumber") Integer orderNumber) {
+	                      @RequestParam("orderNumber") Integer orderNumber) {
 		calculateService.calculate(date, orderNumber);
 	}
 
+	/**
+	 * -Author: Sandy
+	 * -Date: 2019/12/14 23:05
+	 * -param: date
+	 * -param: orderNumber
+	 * -param: content
+	 * -param: price
+	 * -Description: buy num
+	 */
 	@PostMapping(value = "/buyNumber")
 	public void buyNum(@RequestParam("date") String date,
-					   @RequestParam("orderNumber") Integer orderNumber,
-					   @RequestParam("content") String content,
-					   @RequestParam("price") Integer price) {
+	                   @RequestParam("orderNumber") Integer orderNumber,
+	                   @RequestParam("content") String content,
+	                   @RequestParam("price") Integer price) {
 		calculateService.buyNum(date, orderNumber, content, price);
 	}
 
+	/**
+	 * -Author: Sandy
+	 * -Date: 2019/12/14 23:05
+	 * -param: date
+	 * -param: orderNumber
+	 * -param: odds: pei lv
+	 * -param: eachResult
+	 * -Description:
+	 */
 	@PostMapping(value = "/result")
 	public void result(@RequestParam("date") String date,
-					   @RequestParam("orderNumber") Integer orderNumber,
-					   @RequestParam("odds") Integer odds,
-					   @RequestBody EachResult eachResult) {
+	                   @RequestParam("orderNumber") Integer orderNumber,
+	                   @RequestParam("odds") Integer odds,
+	                   @RequestBody EachResult eachResult) {
 		calculateService.result(date, orderNumber, odds, eachResult);
+	}
+
+	/**
+	 * -Author: Sandy
+	 * -Date: 2019/12/14 23:16
+	 * -param: eachResult
+	 * -Description: 插入每期数据
+	 *
+	*/
+	@PostMapping(value = "/insertEachResult")
+	public void insertEachResult(@RequestBody EachResult eachResult) {
+		calculateService.insertEachResult(eachResult);
+
 	}
 
 	// 1. 统计一年
