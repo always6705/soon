@@ -206,7 +206,7 @@ public class CalculateServiceImpl implements CalculateService {
 	@Override
 	public void insertEachResult(EachResult eachResult) {
 		// 先删除每期记录
-		calculateDao.deleteEachResultByDateAndOrderNumber(eachResult.getDate(), eachResult.getOrderNumber());
+		calculateDao.deleteEachResultByDateAndOrderNumber(eachResult.getCreateDate(), eachResult.getOrderNumber());
 
 		// insert result
 		calculateDao.insertEachResult(eachResult);

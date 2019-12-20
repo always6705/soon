@@ -34,9 +34,9 @@ public class EachResult extends BaseModel {
     // 特码
     private Integer rs7;
 
-    // 日期
-    private String date;
-
-    // 期数
-	private Integer orderNumber;
+//    // 日期
+//    private String date;
+//
+//    // 期数
+//	private Integer orderNumber;
 }
