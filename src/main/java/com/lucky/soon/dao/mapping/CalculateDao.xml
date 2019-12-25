@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lucky.soon.dao.CalculateDao">
+
+	<resultMap id="baseResultMap" type="com.lucky.soon.model.Result">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="content_system" jdbcType="VARCHAR" property="contentSystem" />
+		<result column="content_actual" jdbcType="VARCHAR" property="contentActual" />
+		<result column="count_system" jdbcType="INTEGER" property="countSystem" />
+		<result column="count_actual" jdbcType="INTEGER" property="countActual" />
+		<result column="unit_price" jdbcType="INTEGER" property="unitPrice" />
+		<result column="total_system" jdbcType="INTEGER" property="totalSystem" />
+		<result column="total_actual" jdbcType="INTEGER" property="totalActual" />
+		<result column="total_result_system" jdbcType="INTEGER" property="totalResultSystem" />
+		<result column="total_result_actual" jdbcType="INTEGER" property="totalResultActual" />
+		<result column="odds" jdbcType="INTEGER" property="odds" />
+		<result column="create_date" jdbcType="VARCHAR" property="createDate" />
+		<result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+
+		<!--非表字段-->
+		<result column="resultTotal" jdbcType="VARCHAR" property="resultTotal" />
+		<result column="resultMoney" jdbcType="VARCHAR" property="resultMoney" />
+
+		<association property="eachResult" javaType="com.lucky.soon.model.EachResult">
+			<result column="rs7" jdbcType="VARCHAR" property="rs7"/>
+		</association>
+	</resultMap>
+
 	<sql id="order_number_base">
         id, rs1, rs2, rs3, rs4, rs5, rs6, rs7, create_date AS createDate, order_number AS orderNumber
     </sql>
@@ -163,5 +188,29 @@
 			create_date = #{result.createDate}
 		AND order_number = #{result.orderNumber}
 	</update>
+
+	<select id="queryResult" resultMap="baseResultMap">
+	SELECT
+		r.id,
+		r.content_system,
+		r.content_actual,
+		r.unit_price,
+		r.count_system,
+		r.count_actual,
+		concat(r.count_actual,' | ', r.count_system) as resultTotal,
+		concat(r.total_result_actual, ' | ',r.total_result_system) as resultMoney,
+		r.create_date,
+		r.order_number,
+		er.rs7
+	FROM
+		result r
+	LEFT JOIN
+		each_result er
+	ON
+		r.create_date = er.create_date
+	AND r.order_number = er.order_number
+	ORDER BY
+		r.create_date DESC
+	</select>
 
 </mapper>

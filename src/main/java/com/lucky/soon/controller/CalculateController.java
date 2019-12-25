@@ -1,6 +1,7 @@
 package com.lucky.soon.controller;
 
 import com.lucky.soon.model.EachResult;
+import com.lucky.soon.model.Result;
 import com.lucky.soon.service.CalculateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,12 @@ public class CalculateController {
 
 	@PostMapping(value = "/test")
 	public List<EachResult> test() {
+		logger.info("------------------CalculateController-test------------------");
+		return calculateService.test();
+	}
+
+	@GetMapping(value = "/queryTest")
+	public List<EachResult> queryTest() {
 		logger.info("------------------CalculateController-test------------------");
 		return calculateService.test();
 	}
@@ -70,11 +77,8 @@ public class CalculateController {
 	 * -Description:
 	 */
 	@PostMapping(value = "/result")
-	public void result(@RequestParam("date") String date,
-	                   @RequestParam("orderNumber") Integer orderNumber,
-	                   @RequestParam("odds") Integer odds,
-	                   @RequestBody EachResult eachResult) {
-		calculateService.result(date, orderNumber, odds, eachResult);
+	public void result(@RequestBody EachResult eachResult) {
+		calculateService.result(eachResult);
 	}
 
 	/**
@@ -82,12 +86,10 @@ public class CalculateController {
 	 * -Date: 2019/12/14 23:16
 	 * -param: eachResult
 	 * -Description: 插入每期数据
-	 *
-	*/
+	 */
 	@PostMapping(value = "/insertEachResult")
 	public void insertEachResult(@RequestBody EachResult eachResult) {
 		calculateService.insertEachResult(eachResult);
-
 	}
 
 	// 1. 统计一年
@@ -96,12 +98,16 @@ public class CalculateController {
 	// 4. 针对每次查询结果, 需要显示对应的生肖
 	// 5. 对上一期为负, 根据最新一期buy的个数进行预判(是否考虑odds)?
 
-	// post请求封装属性--> createDate, orderNumber
-	//
-
 	@PostMapping(value = "/testObj")
 	public List<EachResult> testObj(@RequestBody EachResult eachResult) {
 		logger.info("------------------CalculateController-testObj------------------");
 		return null;
 	}
+
+	@GetMapping(value = "/queryResult")
+	public List<Result> queryResult(@RequestParam("createDate") String createDate,
+	                                @RequestParam("orderNumber") String orderNumber) {
+		return calculateService.queryResult(createDate, orderNumber);
+	}
+
 }

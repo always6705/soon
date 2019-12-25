@@ -88,4 +88,6 @@ public interface CalculateDao {
 	                                          @Param("orderNumber") Integer orderNumber);
 
 	void insertEachResult(@Param("eachResult") EachResult eachResult);
+
+	List<Result> queryResult(String createDate, String orderNumber);
 }

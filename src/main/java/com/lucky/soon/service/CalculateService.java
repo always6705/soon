@@ -1,6 +1,7 @@
 package com.lucky.soon.service;
 
 import com.lucky.soon.model.EachResult;
+import com.lucky.soon.model.Result;
 
 import java.util.List;
 
@@ -40,14 +41,15 @@ public interface CalculateService {
 	 * @Author K1080077
 	 * @Date 2019/10/7
 	*/
-	void result(String date, Integer orderNumber, Integer odds, EachResult eachResult);
+	void result(EachResult eachResult);
 
 	/**
 	 * -Author: Sandy
 	 * -Date: 2019/12/14 23:13
 	 * -param: date, orderNumber, eachResult
 	 * -Description: 插入每期数据
-	 *
 	*/
 	void insertEachResult(EachResult eachResult);
+
+    List<Result> queryResult(String createDate, String orderNumber);
 }

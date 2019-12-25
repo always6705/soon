@@ -143,20 +143,20 @@ public class CalculateServiceImpl implements CalculateService {
 	 * -Description: 该方法同时可处理历史数据和新数据
 	 */
 	@Override
-	public void result(String date, Integer orderNumber, Integer odds, EachResult eachResult) {
+	public void result(EachResult eachResult) {
 		// 从result表中获取内容: 计算buy结果
-		Result result = calculateDao.getResultByDateAndOrderNumber(date, orderNumber);
+		Result result = calculateDao.getResultByDateAndOrderNumber(eachResult.getCreateDate(), eachResult.getOrderNumber());
 
 		// 如果没数据, 则通过代码自动进行插入数据 TODO 若无数据, 则是计算以往数据; 若有数据, 则是正常流程(预测->buy->计算)
 		if (null == result) {
-			calculate(date, orderNumber);
-			result = calculateDao.getResultByDateAndOrderNumber(date, orderNumber);
+			calculate(eachResult.getCreateDate(), eachResult.getOrderNumber());
+			result = calculateDao.getResultByDateAndOrderNumber(eachResult.getCreateDate(), eachResult.getOrderNumber());
 		} else {
 			// 插入每期数据
 			insertEachResult(eachResult);
 		}
 
-		result.setOdds(odds);
+		result.setOdds(eachResult.getOdds());
 		result.setTotalResultSystem(null);
 		result.setTotalResultActual(null);
 
@@ -166,7 +166,7 @@ public class CalculateServiceImpl implements CalculateService {
 			String[] buyNumSystem = contentSystem.split(",");
 			for (int i = 0; i < buyNumSystem.length; i++) {
 				if (Integer.parseInt(buyNumSystem[i]) == eachResult.getRs7()) {
-					result.setTotalResultSystem(result.getUnitPrice() * odds - result.getTotalSystem());
+					result.setTotalResultSystem(result.getUnitPrice() * eachResult.getOdds() - result.getTotalSystem());
 					break;
 				}
 			}
@@ -178,7 +178,7 @@ public class CalculateServiceImpl implements CalculateService {
 			String[] buyNumActual = contentActual.split(",");
 			for (int i = 0; i < buyNumActual.length; i++) {
 				if (Integer.parseInt(buyNumActual[i]) == eachResult.getRs7()) {
-					result.setTotalResultActual(result.getUnitPrice() * odds - result.getTotalActual());
+					result.setTotalResultActual(result.getUnitPrice() * eachResult.getOdds() - result.getTotalActual());
 					break;
 				}
 			}
@@ -201,7 +201,6 @@ public class CalculateServiceImpl implements CalculateService {
 	 * -Date: 2019/12/14 23:13
 	 * -param: date, orderNumber, eachResult
 	 * -Description: 插入每期数据
-	 *
 	 */
 	@Override
 	public void insertEachResult(EachResult eachResult) {
@@ -210,5 +209,10 @@ public class CalculateServiceImpl implements CalculateService {
 
 		// insert result
 		calculateDao.insertEachResult(eachResult);
+	}
+
+	@Override
+	public List<Result> queryResult(String createDate, String orderNumber) {
+		return calculateDao.queryResult(createDate, orderNumber);
 	}
 }

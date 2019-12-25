@@ -43,4 +43,11 @@ public class Result extends BaseModel {
 	// 赔率
 	private Integer odds;
 
+	// 每期结果
+	private EachResult eachResult;
+
+	// 非表字段
+	private String resultTotal;
+	private String resultMoney;
+
 }
