@@ -32,7 +32,7 @@
 
 	<sql id="result_base">
 		id, content_system AS contentSystem, content_actual AS contentActual,
-		count_system AS countSystem, count_actual AS countActual, unit_price AS unitPrice,
+		count_system AS countSystem, count_actual AS countActual, odds AS odds, unit_price AS unitPrice,
         total_system AS totalSystem, total_actual AS totalActual, total_result_system AS totalResultSystem,
         total_result_actual AS totalResultActual, create_date AS createDate, order_number AS orderNumber
 	</sql>
@@ -101,10 +101,10 @@
 			)
 		VALUES
 		(
-			#{content_system},
-			#{date},
+			#{contentSystem},
+			#{createDate},
 			#{orderNumber},
-			#{count_system}
+			#{countSystem}
 		)
     </insert>
 
@@ -127,7 +127,7 @@
         FROM
             result
         WHERE
-            create_date = #{date}
+            create_date = #{createDate}
         AND order_number = #{orderNumber}
     </select>
 
@@ -172,7 +172,7 @@
 				#{eachResult.rs1}, #{eachResult.rs2}, #{eachResult.rs3},
 				#{eachResult.rs4}, #{eachResult.rs5}, #{eachResult.rs6},
 				#{eachResult.rs7},
-				#{date}, #{orderNumber}
+				#{eachResult.createDate}, #{eachResult.orderNumber}
 			)
 	</insert>
 
@@ -211,6 +211,21 @@
 	AND r.order_number = er.order_number
 	ORDER BY
 		r.create_date DESC
+	</select>
+
+	<select id="queryEachResult" resultType="com.lucky.soon.model.EachResult">
+		SELECT
+			<include refid="order_number_base"/>
+		FROM
+			each_result
+		<where>
+			<if test="createDate != '' and createDate != null">
+				create_date = #{createDate}
+			</if>
+			<if test="orderNumber != '' and orderNumber != null">
+				AND order_number = #{orderNumber}
+			</if>
+		</where>
 	</select>
 
 </mapper>

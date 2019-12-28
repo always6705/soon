@@ -19,4 +19,7 @@ public class BaseModel implements Serializable {
 	// 期数
 	private Integer orderNumber;
 
+	// 步骤
+	private Integer step;
+
 }

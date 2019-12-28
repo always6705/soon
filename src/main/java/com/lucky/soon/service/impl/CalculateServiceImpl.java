@@ -32,46 +32,69 @@ public class CalculateServiceImpl implements CalculateService {
 		return calculateDao.test();
 	}
 
+	@Override
+	public void makeMoney(Result result) {
+		// 1. 预测
+		calculate(result.getCreateDate(), result.getOrderNumber());
+
+		// 2. buy num
+		buyNum(result);
+
+		// 3. calculate each result
+		List<EachResult> eachResultList = queryEachResult(result.getCreateDate(), result.getOrderNumber());
+		if (!eachResultList.isEmpty()) {
+			if (null == result.getEachResult()) {
+				// TODO 多次计算 '预测'/'buy num'的情况
+				result.setEachResult(eachResultList.get(0));
+			}
+			// TODO 传值时注意 createDate/orderNumber/odds 在哪个类上：多次计算 each result 的情况
+			calculateResult(result);
+		} else if (null != result.getEachResult()) {
+			// 第一次计算 each result 的情况
+			calculateResult(result);
+		}
+	}
+
 	/**
-	 * @Description 预测: 计算下期结果
-	 * @Param :
-	 * @Return :
-	 * @Author K1080077
-	 * @Date 2019/10/5
+	 * @ Description 预测: 计算下期结果
+	 * @ Param :
+	 * @ Return :
+	 * @ Author K1080077
+	 * @ createDate 2019/10/5
 	 */
 	@Override
-	public void calculate(String date, Integer orderNumber) {
-		logger.info("预测 --> 日期[{}], 期数[{}]", date, orderNumber);
+	public void calculate(String createDate, Integer orderNumber) {
+		logger.info("预测 --> 日期[{}], 期数[{}]", createDate, orderNumber);
 
-		// 获取前4期所有num
-		List<EachResult> threeResultByDescList = calculateDao.getThreeResultByDesc(date);
+		// 根据当前日期, 获取前4期所有num
+		List<EachResult> threeResultByDescList = calculateDao.getThreeResultByDesc(createDate);
 
 		// 获取前4期的num以及tm
 		HashMap<String, Object> hashMap = getFourResultNum(threeResultByDescList);
 
-		// 去除前4期num
+		// 去除前4期后, 系统产生的num
 		List<Integer> fourResultList = (List<Integer>) hashMap.get("allBuyNum");
 		logger.info("---前4期num({}个): {}", fourResultList.size(), fourResultList);
+
+		// 系统buy内容: system
+		String expectNum = fourResultList.stream().map(String::valueOf).collect(Collectors.joining(","));
+		logger.info("---日期{}, 系统产生{}个: {}", createDate, fourResultList.size(), expectNum);
+
+		// 将计算的结果插入result表: 判断是否有记录, 有则更新, 无则插入 TODO 仅更新 [content_system, count_system]: buy内容与数量
+		Result result = getResultByCreateDateAndOrderNumber(createDate, orderNumber);
+		if (null != result) {
+			calculateDao.updateResult(createDate, orderNumber, expectNum, fourResultList.size());
+		} else {
+			calculateDao.insertResult(createDate, orderNumber, expectNum, fourResultList.size());
+		}
 
 		// 4期tm
 //		ArrayList<Integer> _7ResultList = new ArrayList<>((HashSet<Integer>) hashMap.get("_7ResultSet"));
 //		logger.info("---前4期tm({}个): {}", _7ResultList.size(), _7ResultList);
 
 		// 根据tm获取生肖所有num
-//		List<Integer> numBy7Result = calculateDao.getNumBy7Result(date, _7ResultList);
+//		List<Integer> numBy7Result = calculateDao.getNumBy7Result(createDate, _7ResultList);
 //		logger.info("---计算4期生肖num({}个): {}", numBy7Result.size(), numBy7Result);
-
-		// 系统buy内容: system
-		String expectNum = fourResultList.stream().map(String::valueOf).collect(Collectors.joining(","));
-
-		// 将计算的结果插入result表: 判断是否有记录, 有则更新, 无则插入 TODO 仅更新 [content_system, count_system]: buy内容与数量
-		Result result = calculateDao.getResultByDateAndOrderNumber(date, orderNumber);
-		if (null != result) {
-			calculateDao.updateResult(date, orderNumber, expectNum, fourResultList.size());
-		} else {
-			calculateDao.insertResult(date, orderNumber, expectNum, fourResultList.size());
-		}
-
 	}
 
 	/**
@@ -121,16 +144,33 @@ public class CalculateServiceImpl implements CalculateService {
 	}
 
 	/**
-	 * @Description : buy num(且自动计算price)：content_actual, count_actual, unit_price,
+	 * @ Description : buy num(且自动计算price)：content_actual, count_actual, unit_price,
 	 * total_system = count_system * price, total_actual = count_actual * price
-	 * @Param :
-	 * @Return :
-	 * @Author K1080077
-	 * @Date 2019/10/7
+	 * @ Param :
+	 * @ Return :
+	 * @ Author K1080077
+	 * @ Date 2019/10/7
 	 */
-	@Override
-	public void buyNum(String date, Integer orderNumber, String content, Integer price) {
-		calculateDao.updateResultForBuyNum(date, orderNumber, content, content.split(",").length, price);
+	public void buyNum(Result result) {
+		Result tempResult = getResultByCreateDateAndOrderNumber(result.getCreateDate(), result.getOrderNumber());
+
+		// 若是buy num, 不走下面的if
+		if (StringUtils.isEmpty(result.getContentActual())) {
+			if (StringUtils.isEmpty(tempResult.getContentActual())) { // TODO 单纯'预测'
+				result.setContentActual(tempResult.getContentSystem());
+				// 设置默认price为 50: 之后通过计算或者配置文件更改
+				result.setUnitPrice(50);
+			} else if (!StringUtils.isEmpty(tempResult.getContentActual())) { // TODO 多次'预测'
+				result.setContentActual(tempResult.getContentActual());
+				// 从上次buy的价格中获取
+				result.setUnitPrice(tempResult.getUnitPrice());
+			}
+		}
+
+		// TODO 计算price: 判断上期price, 计算系统本期price; 实际的price手动输入
+		calculateDao.updateResultForBuyNum(result.getCreateDate(), result.getOrderNumber(),
+				result.getContentActual(), result.getContentActual().split(",").length, result.getUnitPrice());
+
 	}
 
 	/**
@@ -143,44 +183,55 @@ public class CalculateServiceImpl implements CalculateService {
 	 * -Description: 该方法同时可处理历史数据和新数据
 	 */
 	@Override
-	public void result(EachResult eachResult) {
-		// 从result表中获取内容: 计算buy结果
-		Result result = calculateDao.getResultByDateAndOrderNumber(eachResult.getCreateDate(), eachResult.getOrderNumber());
+	public void calculateResult(Result result) {
+		EachResult eachResult = result.getEachResult();
 
-		// 如果没数据, 则通过代码自动进行插入数据 TODO 若无数据, 则是计算以往数据; 若有数据, 则是正常流程(预测->buy->计算)
-		if (null == result) {
-			calculate(eachResult.getCreateDate(), eachResult.getOrderNumber());
-			result = calculateDao.getResultByDateAndOrderNumber(eachResult.getCreateDate(), eachResult.getOrderNumber());
-		} else {
-			// 插入每期数据
-			insertEachResult(eachResult);
+		// 从result表中获取内容: 计算buy结果
+		Result tempResult = getResultByCreateDateAndOrderNumber(result.getCreateDate(), result.getOrderNumber());
+
+		// 插入每期数据
+		insertEachResult(eachResult);
+
+		tempResult.setEachResult(eachResult); // 供方法calculateResultTotal()使用
+//		tempResult = calculateResultTotal(tempResult);
+		calculateResultTotal(tempResult);
+
+		// 设置odds
+		if (null == tempResult.getOdds()) {
+			tempResult.setOdds(result.getOdds());
+		}
+		if (null == tempResult.getOdds()) {
+			tempResult.setOdds(42);
 		}
 
-		result.setOdds(eachResult.getOdds());
+		// update result
+		calculateDao.updateResultForCalculate(tempResult);
+	}
+
+	// 单纯计算 total price
+	private void calculateResultTotal(Result result) {
 		result.setTotalResultSystem(null);
 		result.setTotalResultActual(null);
 
+		Integer rs7 = result.getEachResult().getRs7();
+		Integer odds = result.getOdds();
+		Integer unitPrice = result.getUnitPrice();
+
 		// 系统
-		String contentSystem = result.getContentSystem();
-		if (!StringUtils.isEmpty(contentSystem)) {
-			String[] buyNumSystem = contentSystem.split(",");
-			for (int i = 0; i < buyNumSystem.length; i++) {
-				if (Integer.parseInt(buyNumSystem[i]) == eachResult.getRs7()) {
-					result.setTotalResultSystem(result.getUnitPrice() * eachResult.getOdds() - result.getTotalSystem());
-					break;
-				}
+		String[] buyNumSystem = result.getContentSystem().split(",");
+		for (int i = 0; i < buyNumSystem.length; i++) {
+			if (Integer.parseInt(buyNumSystem[i]) == rs7) {
+				result.setTotalResultSystem(unitPrice * odds - result.getTotalSystem());
+				break;
 			}
 		}
 
 		// 实际
-		String contentActual = result.getContentActual();
-		if (!StringUtils.isEmpty(contentActual)) {
-			String[] buyNumActual = contentActual.split(",");
-			for (int i = 0; i < buyNumActual.length; i++) {
-				if (Integer.parseInt(buyNumActual[i]) == eachResult.getRs7()) {
-					result.setTotalResultActual(result.getUnitPrice() * eachResult.getOdds() - result.getTotalActual());
-					break;
-				}
+		String[] buyNumActual = result.getContentActual().split(",");
+		for (int i = 0; i < buyNumActual.length; i++) {
+			if (Integer.parseInt(buyNumActual[i]) == rs7) {
+				result.setTotalResultActual(unitPrice * odds - result.getTotalActual());
+				break;
 			}
 		}
 
@@ -191,9 +242,6 @@ public class CalculateServiceImpl implements CalculateService {
 		if (null == result.getTotalResultActual()) {
 			result.setTotalResultActual(-result.getTotalActual());
 		}
-
-		// update result
-		calculateDao.updateResultForCalculate(result);
 	}
 
 	/**
@@ -212,7 +260,18 @@ public class CalculateServiceImpl implements CalculateService {
 	}
 
 	@Override
-	public List<Result> queryResult(String createDate, String orderNumber) {
+	public List<Result> queryResult(String createDate, Integer orderNumber) {
 		return calculateDao.queryResult(createDate, orderNumber);
 	}
+
+	@Override
+	public List<EachResult> queryEachResult(String createDate, Integer orderNumber) {
+		return calculateDao.queryEachResult(createDate, orderNumber);
+	}
+
+	// 根据 createDate、orderNumber 查找 Result
+	private Result getResultByCreateDateAndOrderNumber(String createDate, Integer orderNumber) {
+		return calculateDao.getResultByDateAndOrderNumber(createDate, orderNumber);
+	}
+
 }

@@ -25,60 +25,21 @@ public class CalculateController {
 		return calculateService.test();
 	}
 
+	@PostMapping(value = "/testResult")
+	public List<EachResult> testResult(@RequestBody Result result) {
+		logger.info("------------------CalculateController-test------------------");
+		return null;
+	}
+
 	@GetMapping(value = "/queryTest")
 	public List<EachResult> queryTest() {
 		logger.info("------------------CalculateController-test------------------");
 		return calculateService.test();
 	}
 
-	@GetMapping("/hello")
-	public String hello() {
-		logger.info("-----------------------hello-----------------------");
-		return null;
-	}
-
-	/**
-	 * @Description 预测: 计算下期结果
-	 * @Param []:
-	 * @Return void:
-	 * @Author sandy
-	 * @Date 2019/10/5
-	 */
-	@PostMapping(value = "/calculate")
-	public void calculate(@RequestParam("date") String date,
-	                      @RequestParam("orderNumber") Integer orderNumber) {
-		calculateService.calculate(date, orderNumber);
-	}
-
-	/**
-	 * -Author: Sandy
-	 * -Date: 2019/12/14 23:05
-	 * -param: date
-	 * -param: orderNumber
-	 * -param: content
-	 * -param: price
-	 * -Description: buy num
-	 */
-	@PostMapping(value = "/buyNumber")
-	public void buyNum(@RequestParam("date") String date,
-	                   @RequestParam("orderNumber") Integer orderNumber,
-	                   @RequestParam("content") String content,
-	                   @RequestParam("price") Integer price) {
-		calculateService.buyNum(date, orderNumber, content, price);
-	}
-
-	/**
-	 * -Author: Sandy
-	 * -Date: 2019/12/14 23:05
-	 * -param: date
-	 * -param: orderNumber
-	 * -param: odds: pei lv
-	 * -param: eachResult
-	 * -Description:
-	 */
-	@PostMapping(value = "/result")
-	public void result(@RequestBody EachResult eachResult) {
-		calculateService.result(eachResult);
+	@PostMapping(value = "/makeMoney")
+	public void makeMoney (@RequestBody Result result) {
+		calculateService.makeMoney(result);
 	}
 
 	/**
@@ -92,22 +53,40 @@ public class CalculateController {
 		calculateService.insertEachResult(eachResult);
 	}
 
+	/**
+	 * -Author: Sandy
+	 * -Date: 2019/12/25
+	 * -param: createDate, orderNumber
+	 * -Description: 查询结果
+	 */
+	@GetMapping(value = "/queryResult")
+	public List<Result> queryResult(@RequestParam(value = "createDate", required = false) String createDate,
+	                                @RequestParam(value = "orderNumber", required = false) Integer orderNumber) {
+
+		return calculateService.queryResult(createDate, orderNumber);
+	}
+
+	/**
+	 * -Author: Sandy
+	 * -Date: 2019/12/25
+	 * -param: createDate, orderNumber
+	 * -Description: 查询每期结果
+	 */
+	@GetMapping(value = "/queryEachResult")
+	public List<EachResult> queryEachResult(@RequestParam(value = "createDate", required = false) String createDate,
+	                                        @RequestParam(value = "orderNumber", required = false) Integer orderNumber) {
+		return calculateService.queryEachResult(createDate, orderNumber);
+	}
+
 	// 1. 统计一年
 	// 2. 统计每个月
 	// 3. 搜索期数或者日期
-	// 4. 针对每次查询结果, 需要显示对应的生肖
+	// 4. 针对每次查询结果, 需要显示对应的animal
 	// 5. 对上一期为负, 根据最新一期buy的个数进行预判(是否考虑odds)?
 
-	@PostMapping(value = "/testObj")
-	public List<EachResult> testObj(@RequestBody EachResult eachResult) {
-		logger.info("------------------CalculateController-testObj------------------");
-		return null;
-	}
+	// 6. TODO 合并第一、二步操作：预测的时候, 顺带将 actual 保存; 在实际第二步 buyNum 时, 再 update 对应的数据
+	// 7. TODO 针对第三步操作：若没进行预测, 已自动处理第一步'预测'操作
+	// 8. TODO 针对重复性操作：每一步要兼容其他两步
 
-	@GetMapping(value = "/queryResult")
-	public List<Result> queryResult(@RequestParam("createDate") String createDate,
-	                                @RequestParam("orderNumber") String orderNumber) {
-		return calculateService.queryResult(createDate, orderNumber);
-	}
 
 }

@@ -10,6 +10,9 @@ import lombok.Data;
 @Data
 public class Result extends BaseModel {
 
+	// 每期结果
+	private EachResult eachResult;
+
 	// 主键id
 	private Integer id;
 
@@ -42,9 +45,6 @@ public class Result extends BaseModel {
 
 	// 赔率
 	private Integer odds;
-
-	// 每期结果
-	private EachResult eachResult;
 
 	// 非表字段
 	private String resultTotal;

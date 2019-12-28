@@ -31,7 +31,7 @@ public interface CalculateDao {
 	List<Integer> getNumBy7Result(@Param("date") String dupdateResultate,
 	                              @Param("_7ResultList") ArrayList<Integer> _7ResultList);
 
-	Result getResultByDateAndOrderNumber(@Param("date") String date,
+	Result getResultByDateAndOrderNumber(@Param("createDate") String createDate,
 	                                     @Param("orderNumber") Integer orderNumber);
 
 	/**
@@ -41,10 +41,10 @@ public interface CalculateDao {
 	 * @Author K1080077
 	 * @Date 2019/10/6
 	 */
-	void insertResult(@Param("date") String date,
+	void insertResult(@Param("createDate") String createDate,
 	                  @Param("orderNumber") Integer orderNumber,
-	                  @Param("content_system") String content_system,
-	                  @Param("count_system") int count_system);
+	                  @Param("contentSystem") String contentSystem,
+	                  @Param("countSystem") int countSystem);
 
 	/**
 	 * @Description : 更新result
@@ -89,5 +89,7 @@ public interface CalculateDao {
 
 	void insertEachResult(@Param("eachResult") EachResult eachResult);
 
-	List<Result> queryResult(String createDate, String orderNumber);
+	List<Result> queryResult(String createDate, Integer orderNumber);
+
+	List<EachResult> queryEachResult(String createDate, Integer orderNumber);
 }

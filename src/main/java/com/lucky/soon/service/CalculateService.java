@@ -16,6 +16,8 @@ public interface CalculateService {
     */
     List<EachResult> test();
 
+	void makeMoney(Result result);
+
     /**
      * @Description 预测: 计算下期结果
      * @Param :
@@ -25,23 +27,15 @@ public interface CalculateService {
     */
 	void calculate(String date, Integer orderNumber);
 
-	/**
-	 * @Description : buy num
-	 * @Param :
-	 * @Return :
-	 * @Author K1080077
-	 * @Date 2019/10/7
-	*/
-	void buyNum(String date, Integer orderNumber, String content, Integer price);
 
 	/**
-	 * @Description : result
+	 * @Description : calculate Result
 	 * @Param :
 	 * @Return :
 	 * @Author K1080077
 	 * @Date 2019/10/7
 	*/
-	void result(EachResult eachResult);
+	void calculateResult(Result result);
 
 	/**
 	 * -Author: Sandy
@@ -51,5 +45,8 @@ public interface CalculateService {
 	*/
 	void insertEachResult(EachResult eachResult);
 
-    List<Result> queryResult(String createDate, String orderNumber);
+    List<Result> queryResult(String createDate, Integer orderNumber);
+
+	List<EachResult> queryEachResult(String createDate, Integer orderNumber);
+
 }
