@@ -38,7 +38,7 @@ public class CalculateController {
 	}
 
 	@PostMapping(value = "/makeMoney")
-	public void makeMoney (@RequestBody Result result) {
+	public void makeMoney(@RequestBody Result result) {
 		calculateService.makeMoney(result);
 	}
 
@@ -76,6 +76,11 @@ public class CalculateController {
 	public List<EachResult> queryEachResult(@RequestParam(value = "createDate", required = false) String createDate,
 	                                        @RequestParam(value = "orderNumber", required = false) Integer orderNumber) {
 		return calculateService.queryEachResult(createDate, orderNumber);
+	}
+
+	@GetMapping(value = "/getYearList")
+	public List<String> getYearList() {
+		return calculateService.getYearList();
 	}
 
 	// 1. 统计一年

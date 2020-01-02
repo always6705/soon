@@ -49,4 +49,10 @@ public interface CalculateService {
 
 	List<EachResult> queryEachResult(String createDate, Integer orderNumber);
 
+	/**
+	 * -Author: Sandy
+	 * -Date: 2019/12/28 23:13
+	 * -Description: 获取 年list
+	 */
+	List<String> getYearList();
 }

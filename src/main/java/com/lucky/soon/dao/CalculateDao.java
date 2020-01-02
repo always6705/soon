@@ -92,4 +92,6 @@ public interface CalculateDao {
 	List<Result> queryResult(String createDate, Integer orderNumber);
 
 	List<EachResult> queryEachResult(String createDate, Integer orderNumber);
+
+	List<String> getYearList();
 }

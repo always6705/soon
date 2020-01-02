@@ -19,13 +19,15 @@ import static org.junit.Assert.assertEquals;
 public class AESUtilsTest {
     private static final Logger logger = LoggerFactory.getLogger(AESUtilsTest.class);
 
+    public static void main(String[] args) {
+        encryptStringTest();
+    }
     /*
      * 字符串加密及解密UT
      * */
-    @Test
-    public void encryptStringTest() {
+    public static void encryptStringTest() {
         // 密文
-        String content = "6246C176E63359C50D94C033D13C31DF";
+        String content = "3F1DC143A701EBECACEA94F184D32020";
         // 密钥
         String key = "U2FsdGVkX19Zlt2htFQbg7XMOMuPBaQ=";
 

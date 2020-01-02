@@ -209,6 +209,14 @@
 	ON
 		r.create_date = er.create_date
 	AND r.order_number = er.order_number
+	<where>
+		<if test="createDate != '' and createDate != null">
+			r.create_date = #{createDate}
+		</if>
+		<if test="orderNumber != '' and orderNumber != null">
+			AND r.order_number like CONCAT('%',#{orderNumber},'%')
+		</if>
+	</where>
 	ORDER BY
 		r.create_date DESC
 	</select>
@@ -223,9 +231,13 @@
 				create_date = #{createDate}
 			</if>
 			<if test="orderNumber != '' and orderNumber != null">
-				AND order_number = #{orderNumber}
+				AND order_number like CONCAT('%',#{orderNumber},'%')
 			</if>
 		</where>
+	</select>
+
+	<select id="getYearList" resultType="String">
+		SELECT DISTINCT CONCAT(SUBSTR(create_date, 1, 4), '年') FROM result
 	</select>
 
 </mapper>

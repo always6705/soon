@@ -22,4 +22,16 @@ public class CalculateTest extends BaseJunit {
         List<EachResult> threeResultByDesc = calculateDao.getThreeResultByDesc("2019-12-12");
         Assert.assertFalse(threeResultByDesc.isEmpty());
     }
+
+    @Test
+    public void test() {
+        String string = "hello";
+        test1(string);
+        System.out.println(string);
+    }
+
+    public void test1(String str) {
+        str = str + " 111";
+//        return str;
+    }
 }

@@ -274,4 +274,8 @@ public class CalculateServiceImpl implements CalculateService {
 		return calculateDao.getResultByDateAndOrderNumber(createDate, orderNumber);
 	}
 
+	@Override
+	public List<String> getYearList() {
+		return calculateDao.getYearList();
+	}
 }
