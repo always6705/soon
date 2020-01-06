@@ -194,7 +194,7 @@ public class CalculateServiceImpl implements CalculateService {
 
 		tempResult.setEachResult(eachResult); // 供方法calculateResultTotal()使用
 //		tempResult = calculateResultTotal(tempResult);
-		calculateResultTotal(tempResult);
+		calculateResultTotal(tempResult)    ;
 
 		// 设置odds
 		if (null == tempResult.getOdds()) {
