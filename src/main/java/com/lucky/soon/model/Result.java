@@ -46,6 +46,8 @@ public class Result extends BaseModel {
 	// 赔率
 	private Integer odds;
 
+	private Boolean realBuy;
+
 	// 非表字段
 	private String resultTotal;
 	private String resultMoney;

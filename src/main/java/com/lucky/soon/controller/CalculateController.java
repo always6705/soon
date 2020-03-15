@@ -9,15 +9,39 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 @RestController
 @RequestMapping("/soon")
 public class CalculateController {
 
+	private final ReentrantLock reentrantLock = new ReentrantLock();
+
 	private final static Logger logger = LoggerFactory.getLogger(CalculateController.class);
 
 	@Resource
 	private CalculateService calculateService;
+
+//	@GetMapping("/testReentrantLock")
+//	public void testReentrantLock() {
+//		for (int i = 0; i < 10; i++) {
+//				if (!reentrantLock.tryLock()) {
+//					logger.error("{}, 没拿到锁", i);
+//				} else {
+//					try {
+//					logger.info("{}, 拿到锁", i);
+//					TimeUnit.SECONDS.sleep(2);
+//					} catch (Exception e) {
+//						logger.info("异常, {}", e.getMessage());
+//					} finally {
+//						logger.info("没拿到锁-释放锁, {}", i);
+//						logger.info("释放锁, {}", i);
+//						reentrantLock.unlock();
+//					}
+//				}
+//		}
+//	}
 
 	@PostMapping(value = "/test")
 	public List<EachResult> test() {
@@ -90,9 +114,6 @@ public class CalculateController {
 	// 4. 针对每次查询结果, 需要显示对应的animal
 	// 5. 对上一期为负, 根据最新一期buy的个数进行预判(是否考虑odds)?
 
-	// 6. TODO 合并第一、二步操作：预测的时候, 顺带将 actual 保存; 在实际第二步 buyNum 时, 再 update 对应的数据
-	// 7. TODO 针对第三步操作：若没进行预测, 已自动处理第一步'预测'操作
-	// 8. TODO 针对重复性操作：每一步要兼容其他两步
 
 
 }

@@ -39,6 +39,14 @@ spring:
         smtp:
           socketFactory.class: javax.net.ssl.SSLSocketFactory
         debug: true   （测试用）
+###################  redisTemplate配置  ###################
+  redis:
+    host: localhost
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+    database: 8
 
 ###################  mybatis配置  ###################
 mybatis:

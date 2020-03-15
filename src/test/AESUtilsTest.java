@@ -29,13 +29,14 @@ public class AESUtilsTest {
         // 密文
         String content = "3F1DC143A701EBECACEA94F184D32020";
         // 密钥
-        String key = "U2FsdGVkX19Zlt2htFQbg7XMOMuPBaQ=";
+        String key = "9ef78b3699ac83aa59d1d7cd3afb9582";
 
-        String decryptString = AESUtils.decryptString(content, key);
-        logger.info("解密: {}", decryptString);
+//        String decryptString = AESUtils.decryptString(content, key);
+//        logger.info("解密: {}", decryptString);
 
         // 加密content字符串, 密钥为dsp2019
-        String encryptString = AESUtils.encryptString(decryptString, key);
+        String encryptString = AESUtils.encryptString("dsp_user", key);
+//        String encryptString = AESUtils.encryptString(decryptString, key);
         logger.info("加密: {}", encryptString);
     }
 
